@@ -1,0 +1,803 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NayePankh Foundation - Donor Retention Predictor</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- CSS Styles -->
+    <style>
+        :root {
+            --bg-color: #0b0f19;
+            --card-bg: rgba(20, 26, 42, 0.65);
+            --card-border: rgba(255, 255, 255, 0.08);
+            --primary: #6366f1; /* Indigo */
+            --primary-glow: rgba(99, 102, 241, 0.4);
+            --secondary: #10b981; /* Emerald */
+            --secondary-glow: rgba(16, 185, 129, 0.3);
+            --accent: #ec4899; /* Pink */
+            --accent-glow: rgba(236, 72, 153, 0.3);
+            --text-main: #f3f4f6;
+            --text-muted: #9ca3af;
+            --font-family: 'Outfit', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            --transition-speed: 0.3s;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            background-image: 
+                radial-gradient(at 10% 20%, rgba(99, 102, 241, 0.15) 0px, transparent 50%),
+                radial-gradient(at 90% 80%, rgba(236, 72, 153, 0.1) 0px, transparent 50%);
+            background-attachment: fixed;
+            color: var(--text-main);
+            font-family: var(--font-family);
+            line-height: 1.5;
+            padding-bottom: 3rem;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem 1.5rem;
+        }
+
+        /* Header Layout */
+        header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 2.5rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid var(--card-border);
+        }
+
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .logo-icon {
+            width: 42px;
+            height: 42px;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: white;
+            box-shadow: 0 0 15px var(--primary-glow);
+        }
+
+        .logo-text h1 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            letter-spacing: -0.025em;
+            background: linear-gradient(to right, #ffffff, #d1d5db);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .logo-text p {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            font-weight: 400;
+        }
+
+        .tagline {
+            background: rgba(99, 102, 241, 0.1);
+            border: 1px solid rgba(99, 102, 241, 0.2);
+            color: #a5b4fc;
+            padding: 0.4rem 0.8rem;
+            border-radius: 9999px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        /* Main Dashboard Grid */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 2rem;
+        }
+
+        @media (min-width: 900px) {
+            .dashboard-grid {
+                grid-template-columns: 1.1fr 1.3fr;
+            }
+        }
+
+        /* Card styles with glassmorphism */
+        .glass-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--card-border);
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+            transition: transform var(--transition-speed), border-color var(--transition-speed);
+        }
+
+        .glass-card:hover {
+            border-color: rgba(255, 255, 255, 0.15);
+        }
+
+        .card-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: white;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            padding-bottom: 0.75rem;
+        }
+
+        .card-title svg {
+            width: 20px;
+            height: 20px;
+            color: var(--primary);
+        }
+
+        /* Input Form Elements */
+        .form-group {
+            margin-bottom: 1.25rem;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: var(--text-muted);
+            margin-bottom: 0.5rem;
+        }
+
+        .form-control {
+            width: 100%;
+            background: rgba(10, 15, 28, 0.8);
+            border: 1px solid var(--card-border);
+            border-radius: 10px;
+            color: white;
+            font-family: var(--font-family);
+            font-size: 1rem;
+            padding: 0.75rem 1rem;
+            outline: none;
+            transition: all var(--transition-speed);
+        }
+
+        .form-control:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 8px var(--primary-glow);
+        }
+
+        /* Button Styling */
+        .btn-submit {
+            display: block;
+            width: 100%;
+            background: linear-gradient(135deg, var(--primary), #4f46e5);
+            border: none;
+            border-radius: 12px;
+            color: white;
+            font-family: var(--font-family);
+            font-size: 1rem;
+            font-weight: 600;
+            padding: 1rem;
+            cursor: pointer;
+            transition: all var(--transition-speed);
+            box-shadow: 0 4px 12px var(--primary-glow);
+            margin-top: 1.5rem;
+        }
+
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px var(--primary-glow);
+            filter: brightness(1.1);
+        }
+
+        .btn-submit:active {
+            transform: translateY(0);
+        }
+
+        /* Results Display Card */
+        .results-container {
+            margin-top: 2rem;
+            padding-top: 1.5rem;
+            border-top: 1px dashed rgba(255, 255, 255, 0.1);
+            display: none; /* Hidden by default */
+        }
+
+        .result-glow-box {
+            padding: 1.5rem;
+            border-radius: 16px;
+            text-align: center;
+            margin-bottom: 1rem;
+            position: relative;
+            overflow: hidden;
+            background: rgba(10, 15, 28, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        /* Prediction states */
+        .will-donate-yes {
+            border-color: rgba(16, 185, 129, 0.3);
+            background: radial-gradient(circle at center, rgba(16, 185, 129, 0.08) 0%, transparent 80%);
+        }
+
+        .will-donate-no {
+            border-color: rgba(236, 72, 153, 0.3);
+            background: radial-gradient(circle at center, rgba(236, 72, 153, 0.08) 0%, transparent 80%);
+        }
+
+        .prediction-badge {
+            display: inline-block;
+            padding: 0.35rem 1rem;
+            border-radius: 9999px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 0.75rem;
+        }
+
+        .badge-yes {
+            background: rgba(16, 185, 129, 0.15);
+            color: #34d399;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            box-shadow: 0 0 10px rgba(16, 185, 129, 0.1);
+        }
+
+        .badge-no {
+            background: rgba(236, 72, 153, 0.15);
+            color: #f472b6;
+            border: 1px solid rgba(236, 72, 153, 0.3);
+            box-shadow: 0 0 10px rgba(236, 72, 153, 0.1);
+        }
+
+        .probability-value {
+            font-size: 2.75rem;
+            font-weight: 800;
+            margin-bottom: 0.25rem;
+            letter-spacing: -0.03em;
+        }
+
+        .text-yes {
+            color: #10b981;
+            text-shadow: 0 0 20px rgba(16, 185, 129, 0.4);
+        }
+
+        .text-no {
+            color: #ec4899;
+            text-shadow: 0 0 20px rgba(236, 72, 153, 0.4);
+        }
+
+        .probability-label {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        /* Meter Animation */
+        .meter-container {
+            height: 6px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+            margin: 1rem auto 0;
+            width: 80%;
+            overflow: hidden;
+        }
+
+        .meter-fill {
+            height: 100%;
+            width: 0%;
+            border-radius: 3px;
+            transition: width 1s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .meter-yes {
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+        }
+
+        .meter-no {
+            background: linear-gradient(to right, var(--primary), var(--accent));
+        }
+
+        .prediction-footer {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            padding: 0 0.5rem;
+        }
+
+        /* Metrics & Charts Styling */
+        .metrics-comparison {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .model-tab-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            background: rgba(10, 15, 28, 0.4);
+            padding: 0.25rem;
+            border-radius: 10px;
+            border: 1px solid var(--card-border);
+            margin-bottom: 1rem;
+        }
+
+        .model-tab {
+            padding: 0.6rem;
+            text-align: center;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            color: var(--text-muted);
+            transition: all 0.2s;
+        }
+
+        .model-tab.active {
+            background: var(--primary);
+            color: white;
+            box-shadow: 0 2px 8px var(--primary-glow);
+        }
+
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .metric-item {
+            background: rgba(10, 15, 28, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            border-radius: 12px;
+            padding: 1rem;
+            text-align: center;
+        }
+
+        .metric-title {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 0.25rem;
+        }
+
+        .metric-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: white;
+        }
+
+        /* Feature Importance Styling */
+        .feature-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.85rem;
+        }
+
+        .feature-item {
+            display: flex;
+            flex-direction: column;
+            gap: 0.35rem;
+        }
+
+        .feature-header {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        .feature-name {
+            color: var(--text-main);
+            text-transform: capitalize;
+        }
+
+        .feature-value {
+            color: var(--text-muted);
+            font-size: 0.8rem;
+        }
+
+        .feature-bar-bg {
+            height: 8px;
+            background: rgba(255, 255, 255, 0.06);
+            border-radius: 4px;
+            overflow: hidden;
+            width: 100%;
+        }
+
+        .feature-bar-fill {
+            height: 100%;
+            background: linear-gradient(to right, var(--primary), var(--accent));
+            border-radius: 4px;
+            width: 0%;
+            transition: width 1s ease-in-out;
+        }
+
+        /* Utility classes */
+        .pulse {
+            animation: pulse-animation 2s infinite;
+        }
+
+        @keyframes pulse-animation {
+            0% { box-shadow: 0 0 0 0 rgba(99, 102, 241, 0.4); }
+            70% { box-shadow: 0 0 0 10px rgba(99, 102, 241, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(99, 102, 241, 0); }
+        }
+
+        .badge-active {
+            background: rgba(16, 185, 129, 0.15);
+            color: #34d399;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            font-size: 0.7rem;
+            padding: 0.15rem 0.5rem;
+            border-radius: 6px;
+            font-weight: 600;
+            display: inline-block;
+            margin-left: 0.5rem;
+            vertical-align: middle;
+            text-transform: uppercase;
+        }
+
+        .empty-state {
+            padding: 3rem 1rem;
+            text-align: center;
+            color: var(--text-muted);
+        }
+
+        .empty-state svg {
+            width: 48px;
+            height: 48px;
+            color: rgba(255, 255, 255, 0.1);
+            margin-bottom: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Dashboard Header -->
+        <header>
+            <div class="logo-area">
+                <div class="logo-icon">NP</div>
+                <div class="logo-text">
+                    <h1>NayePankh Foundation</h1>
+                    <p>Donor Predictive Retention System</p>
+                </div>
+            </div>
+            <div class="tagline">Machine Learning Dashboard</div>
+        </header>
+
+        <!-- Main Workspace -->
+        <div class="dashboard-grid">
+            <!-- Left Panel: Predictor Form -->
+            <div class="glass-card">
+                <h2 class="card-title">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904L9 21m0 0l-.813-5.096L9 21zm0 0l6.6-6.6a2.25 2.25 0 10-3.181-3.181l-6.6 6.6zM21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    Predict Donor Likelihood
+                </h2>
+
+                <form id="predictionForm">
+                    <div class="form-group">
+                        <label class="form-label" for="previous_donation_amount">Previous Donation Amount (₹)</label>
+                        <input class="form-control" type="number" id="previous_donation_amount" required min="10" max="1000000" step="any" placeholder="e.g. 1500.00">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="donation_frequency">Donation Frequency (Total Count)</label>
+                        <input class="form-control" type="number" id="donation_frequency" required min="1" max="500" placeholder="e.g. 5">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="time_since_last_donation">Months Since Last Donation</label>
+                        <input class="form-control" type="number" id="time_since_last_donation" required min="1" max="120" placeholder="e.g. 4">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="campaign_participation_history">Campaign Participation (Number of campaigns)</label>
+                        <input class="form-control" type="number" id="campaign_participation_history" required min="0" max="50" placeholder="e.g. 2">
+                    </div>
+
+                    <button class="btn-submit" type="submit">Predict Likelihood</button>
+                </form>
+
+                <!-- Results Output -->
+                <div class="results-container" id="resultsContainer">
+                    <h3 class="form-label" style="text-transform: uppercase; margin-bottom: 0.75rem; letter-spacing: 0.05em;">Prediction Output</h3>
+                    
+                    <div class="result-glow-box" id="resultGlowBox">
+                        <div class="prediction-badge" id="predictionBadge">Will Donate Again</div>
+                        <div class="probability-value" id="probabilityValue">0.0%</div>
+                        <div class="probability-label">Likelihood Score</div>
+                        
+                        <div class="meter-container">
+                            <div class="meter-fill" id="meterFill"></div>
+                        </div>
+                    </div>
+
+                    <div class="prediction-footer">
+                        <span>Status: Operational</span>
+                        <span id="activeModelLabel">Model: Random Forest</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Panel: Insights & Metrics -->
+            <div class="glass-card">
+                <h2 class="card-title">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M7.5 14.25v2.25m3-4.5v4.5m3-6.75v6.75m3-9v9M6 20.25h12A2.25 2.25 0 0020.25 18V6A2.25 2.25 0 0018 3.75H6A2.25 2.25 0 003.75 6v12A2.25 2.25 0 006 20.25z" />
+                    </svg>
+                    Model Performance & Insights
+                </h2>
+
+                <div id="analyticsContent">
+                    <div class="model-tab-container">
+                        <div class="model-tab active" id="tabRF" onclick="switchModelTab('Random Forest')">
+                            Random Forest <span class="badge-active" id="badgeRF" style="display:none;">Active</span>
+                        </div>
+                        <div class="model-tab" id="tabLR" onclick="switchModelTab('Logistic Regression')">
+                            Logistic Regression <span class="badge-active" id="badgeLR" style="display:none;">Active</span>
+                        </div>
+                    </div>
+
+                    <!-- Metrics -->
+                    <div class="metrics-grid">
+                        <div class="metric-item">
+                            <div class="metric-title">Accuracy</div>
+                            <div class="metric-value" id="valAccuracy">-%</div>
+                        </div>
+                        <div class="metric-item">
+                            <div class="metric-title">F1-Score</div>
+                            <div class="metric-value" id="valF1">-%</div>
+                        </div>
+                        <div class="metric-item">
+                            <div class="metric-title">Precision</div>
+                            <div class="metric-value" id="valPrecision">-%</div>
+                        </div>
+                        <div class="metric-item">
+                            <div class="metric-title">AUC-ROC</div>
+                            <div class="metric-value" id="valROC">-%</div>
+                        </div>
+                    </div>
+
+                    <h3 class="form-label" style="text-transform: uppercase; margin-bottom: 1rem; letter-spacing: 0.05em; color: white;">Feature Importance & Impact</h3>
+                    
+                    <!-- Feature Importances list -->
+                    <div class="feature-list" id="featureList">
+                        <!-- Filled dynamically -->
+                    </div>
+                </div>
+
+                <div id="analyticsEmpty" class="empty-state" style="display: none;">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
+                    </svg>
+                    <p>No model training data found. Please run the training pipeline (`python train.py`) first to populate analytics.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JS Logic -->
+    <script>
+        let dashboardData = null;
+        let selectedModel = 'Random Forest';
+
+        // Load data on page mount
+        window.addEventListener('DOMContentLoaded', () => {
+            fetchMetrics();
+        });
+
+        function fetchMetrics() {
+            fetch('/metrics')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Not trained yet');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    dashboardData = data;
+                    selectedModel = data.best_model || 'Random Forest';
+                    
+                    // Show content, hide empty state
+                    document.getElementById('analyticsContent').style.display = 'block';
+                    document.getElementById('analyticsEmpty').style.display = 'none';
+
+                    // Update UI
+                    updateActiveModelBadges();
+                    switchModelTab(selectedModel);
+                })
+                .catch(err => {
+                    console.log('Metrics not available yet', err);
+                    document.getElementById('analyticsContent').style.display = 'none';
+                    document.getElementById('analyticsEmpty').style.display = 'block';
+                });
+        }
+
+        function updateActiveModelBadges() {
+            if (!dashboardData) return;
+            const bestModelName = dashboardData.best_model;
+            
+            if (bestModelName === 'Random Forest') {
+                document.getElementById('badgeRF').style.display = 'inline-block';
+                document.getElementById('badgeLR').style.display = 'none';
+            } else if (bestModelName === 'Logistic Regression') {
+                document.getElementById('badgeLR').style.display = 'inline-block';
+                document.getElementById('badgeRF').style.display = 'none';
+            }
+        }
+
+        function switchModelTab(modelName) {
+            selectedModel = modelName;
+            
+            // Toggle active tabs class
+            if (modelName === 'Random Forest') {
+                document.getElementById('tabRF').classList.add('active');
+                document.getElementById('tabLR').classList.remove('active');
+            } else {
+                document.getElementById('tabLR').classList.add('active');
+                document.getElementById('tabRF').classList.remove('active');
+            }
+
+            if (!dashboardData || !dashboardData.models[modelName]) return;
+
+            const modelInfo = dashboardData.models[modelName];
+            const metrics = modelInfo.metrics;
+            const insights = modelInfo.insights;
+
+            // Render Metrics values
+            document.getElementById('valAccuracy').innerText = (metrics.accuracy * 100).toFixed(1) + '%';
+            document.getElementById('valF1').innerText = (metrics.f1 * 100).toFixed(1) + '%';
+            document.getElementById('valPrecision').innerText = (metrics.precision * 100).toFixed(1) + '%';
+            document.getElementById('valROC').innerText = (metrics.roc_auc * 100).toFixed(1) + '%';
+
+            // Render Feature Importance Bars
+            const featureListContainer = document.getElementById('featureList');
+            featureListContainer.innerHTML = '';
+
+            // Sort features by importance value (absolute value for logistic coefficients)
+            const sortedFeatures = Object.keys(insights).map(key => {
+                return {
+                    name: key.replace(/_/g, ' '),
+                    rawKey: key,
+                    value: insights[key],
+                    absVal: Math.abs(insights[key])
+                };
+            });
+
+            // Find max importance/coefficient to normalize the length of bars
+            const maxAbs = Math.max(...sortedFeatures.map(f => f.absVal)) || 1;
+
+            sortedFeatures.sort((a, b) => b.absVal - a.absVal);
+
+            sortedFeatures.forEach(feature => {
+                const percentageOfMax = (feature.absVal / maxAbs) * 100;
+                
+                // Formulate description/details
+                let displayVal = '';
+                if (modelName === 'Logistic Regression') {
+                    // Show coefficient value
+                    displayVal = `Coef: ${feature.value.toFixed(3)}`;
+                } else {
+                    // Show percentage value for random forest
+                    displayVal = `Weight: ${(feature.value * 100).toFixed(1)}%`;
+                }
+
+                const featureHtml = `
+                    <div class="feature-item">
+                        <div class="feature-header">
+                            <span class="feature-name">${feature.name}</span>
+                            <span class="feature-value">${displayVal}</span>
+                        </div>
+                        <div class="feature-bar-bg">
+                            <div class="feature-bar-fill" style="width: ${percentageOfMax}%;"></div>
+                        </div>
+                    </div>
+                `;
+                featureListContainer.insertAdjacentHTML('beforeend', featureHtml);
+            });
+        }
+
+        // Handle Prediction Form submit
+        const predictionForm = document.getElementById('predictionForm');
+        predictionForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+
+            // Extract values
+            const payload = {
+                previous_donation_amount: parseFloat(document.getElementById('previous_donation_amount').value),
+                donation_frequency: parseInt(document.getElementById('donation_frequency').value),
+                time_since_last_donation: parseInt(document.getElementById('time_since_last_donation').value),
+                campaign_participation_history: parseInt(document.getElementById('campaign_participation_history').value)
+            };
+
+            // Call API
+            fetch('/predict', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(payload)
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (!data.success) {
+                    alert('Error: ' + data.error);
+                    return;
+                }
+
+                // Show prediction block
+                const resultsContainer = document.getElementById('resultsContainer');
+                resultsContainer.style.display = 'block';
+
+                // Update prediction badge and text class
+                const badge = document.getElementById('predictionBadge');
+                const glowBox = document.getElementById('resultGlowBox');
+                const valText = document.getElementById('probabilityValue');
+                const meterFill = document.getElementById('meterFill');
+                const activeModelLabel = document.getElementById('activeModelLabel');
+
+                activeModelLabel.innerText = `Model: ${data.model_used}`;
+
+                if (data.prediction === 'Yes') {
+                    badge.innerText = 'Highly Likely to Donate Again';
+                    badge.className = 'prediction-badge badge-yes';
+                    
+                    glowBox.className = 'result-glow-box will-donate-yes';
+                    
+                    valText.innerText = data.probability + '%';
+                    valText.className = 'probability-value text-yes';
+                    
+                    meterFill.className = 'meter-fill meter-yes';
+                } else {
+                    badge.innerText = 'Unlikely to Donate Again';
+                    badge.className = 'prediction-badge badge-no';
+                    
+                    glowBox.className = 'result-glow-box will-donate-no';
+                    
+                    valText.innerText = data.probability + '%';
+                    valText.className = 'probability-value text-no';
+                    
+                    meterFill.className = 'meter-fill meter-no';
+                }
+
+                // Trigger width transition
+                setTimeout(() => {
+                    meterFill.style.width = data.probability + '%';
+                }, 50);
+
+                // Smooth scroll to prediction output
+                resultsContainer.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            })
+            .catch(err => {
+                alert('Server Error. Ensure you have run the training pipeline and app.py is active.');
+                console.error(err);
+            });
+        });
+    </script>
+</body>
+</html>
