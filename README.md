@@ -1,12 +1,23 @@
 # Ml-for-intern
 
 To run it 
-python --version
+# 1. Create the virtual environment
+`python -m venv venv`
 
-python -c "import flask, pandas, numpy, sklearn, joblib"
+# 2. Activate the virtual environment
+`.\venv\Scripts\activate`
 
-In terminal
+# 3. Install the libraries
+`pip install -r requirements.txt`
 
-python app.py
+# 4. Generate the data
+`python generate_synthetic_data.py`
 
-http://127.0.0.1:5000/
+# 5. Train the ML models
+`python train.py`
+
+# 6. Start the server
+`python app.py`
+
+# 7. Run the port in browser
+`http://127.0.0.1:5000`
